@@ -34,7 +34,7 @@ setup(
     # There are some restrictions on what makes a valid project name
     # specification here:
     # https://packaging.python.org/specifications/core-metadata/#name
-    name='sampleproject',  # Required
+    name='StockMarketForecast',  # Required
 
     # Versions should comply with PEP 440:
     # https://www.python.org/dev/peps/pep-0440/
@@ -42,12 +42,12 @@ setup(
     # For a discussion on single-sourcing the version across setup.py and the
     # project code, see
     # https://packaging.python.org/en/latest/single_source_version.html
-    version='1.2.0',  # Required
+    version='1.0.0',  # Required
 
     # This is a one-line description or tagline of what your project does. This
     # corresponds to the "Summary" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#summary
-    description='A sample Python project',  # Optional
+    description='A python project that forecasts stock market trends using LSTM.',  # Optional
 
     # This is an optional longer description of your project that represents
     # the body of text which users will see when they visit PyPI.
@@ -75,15 +75,15 @@ setup(
     #
     # This field corresponds to the "Home-Page" metadata field:
     # https://packaging.python.org/specifications/core-metadata/#home-page-optional
-    url='https://github.com/pypa/sampleproject',  # Optional
+    url='https://github.com/hrawson79/StockMarketForecast',  # Optional
 
     # This should be your name or the name of the organization which owns the
     # project.
-    author='The Python Packaging Authority',  # Optional
+    author='ECE 6254 Stock Market Group',  # Optional
 
     # This should be a valid email address corresponding to the author listed
     # above.
-    author_email='pypa-dev@googlegroups.com',  # Optional
+    author_email='',  # Optional
 
     # Classifiers help users find your project by categorizing it.
     #
@@ -96,11 +96,11 @@ setup(
         'Development Status :: 3 - Alpha',
 
         # Indicate who your project is intended for
-        'Intended Audience :: Developers',
-        'Topic :: Software Development :: Build Tools',
+        'Intended Audience :: Educational',
+        'Topic :: LSTM deep learning',
 
         # Pick your license as you wish
-        'License :: OSI Approved :: MIT License',
+        'License :: OSI Approved :: GNU v3.0',
 
         # Specify the Python versions you support here. In particular, ensure
         # that you indicate whether you support Python 2, Python 3 or both.
@@ -119,7 +119,7 @@ setup(
     # project page. What does your project relate to?
     #
     # Note that this is a string of words separated by whitespace, not a list.
-    keywords='sample setuptools development',  # Optional
+    keywords='lstm deep learning stock market',  # Optional
 
     # You can just specify package directories manually here if your project is
     # simple. Or you can use find_packages().
@@ -137,7 +137,7 @@ setup(
     # and refuse to install the project if the version does not match. If you
     # do not support Python 2, you can simplify this to '>=3.5' or similar, see
     # https://packaging.python.org/guides/distributing-packages-using-setuptools/#python-requires
-    python_requires='>=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, <4',
+    python_requires='>=2.7, <4',
 
     # This field lists other packages that your project depends on to run.
     # Any package you put here will be installed by pip when your project is
@@ -145,7 +145,7 @@ setup(
     #
     # For an analysis of "install_requires" vs pip's requirements files see:
     # https://packaging.python.org/en/latest/requirements.html
-    install_requires=['peppercorn'],  # Optional
+    install_requires=['pandas', 'pandas_datareader', 'matplotlib', 'numpy', 'tensorflow'],  # Optional
 
     # List additional groups of dependencies here (e.g. development
     # dependencies). Users will be able to install these using the "extras"
@@ -155,19 +155,18 @@ setup(
     #
     # Similar to `install_requires` above, these must be valid existing
     # projects.
-    extras_require={  # Optional
-        'dev': ['check-manifest'],
-        'test': ['coverage'],
-    },
+    #extras_require={  # Optional
+
+    #},
 
     # If there are data files included in your packages that need to be
     # installed, specify them here.
     #
     # If using Python 2.6 or earlier, then these have to be included in
     # MANIFEST.in as well.
-    package_data={  # Optional
-        'sample': ['package_data.dat'],
-    },
+    #package_data={  # Optional
+    #    'sample': ['package_data.dat'],
+    #},
 
     # Although 'package_data' is the preferred approach, in some case you may
     # need to place data files outside of your packages. See:
@@ -198,10 +197,10 @@ setup(
     # issues, where the source is hosted, where to say thanks to the package
     # maintainers, and where to support the project financially. The key is
     # what's used to render the link text on PyPI.
-    project_urls={  # Optional
-        'Bug Reports': 'https://github.com/pypa/sampleproject/issues',
-        'Funding': 'https://donate.pypi.org',
-        'Say Thanks!': 'http://saythanks.io/to/example',
-        'Source': 'https://github.com/pypa/sampleproject/',
-    },
+    #project_urls={  # Optional
+    #    'Bug Reports': 'https://github.com/pypa/sampleproject/issues',
+    #    'Funding': 'https://donate.pypi.org',
+    #    'Say Thanks!': 'http://saythanks.io/to/example',
+    #    'Source': 'https://github.com/pypa/sampleproject/',
+    #},
 )
