@@ -36,5 +36,6 @@ class stock(object):
     self.low_ = self.data_frame_['Low']
     self.volume_ = self.data_frame_['Volume']
     self.adj_close_ = self.data_frame_['Adj Close']
+    self.dates_ = self.data_frame_.index.values
     self.close_mov_avg_20_ = self.close_.rolling(window=20).mean()
     self.close_mov_avg_100_ = self.close_.rolling(window=100).mean()
