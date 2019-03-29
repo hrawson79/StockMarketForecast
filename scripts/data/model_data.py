@@ -28,7 +28,7 @@ class model_data(object):
     self.dates_ = self.dates_.reshape(len(self.dates_), input_size)
 
     self.train_inputs_ = self.inputs_[:int((len(self.inputs_)*.8))]
-    self.test_inpts_ = self.inputs_[int((len(self.inputs_)*.8))+1:]
+    self.test_inputs_ = self.inputs_[int((len(self.inputs_)*.8))+1:]
 
     self.train_targets_ = self.targets_[:int((len(self.targets_)*.8))]
     self.test_targets_ = self.targets_[int((len(self.targets_)*.8))+1:]
