@@ -13,7 +13,7 @@ if __name__ == "__main__":
     tickers = ['^GSPC']
 
     # Date range of data to be downloaded
-    start_date = '2017-02-02'
+    start_date = '2018-06-02'
     end_date = '2019-03-15'
 
     INPUT_SIZE = 1
@@ -26,8 +26,8 @@ if __name__ == "__main__":
     LSTM_SIZE = 128
     NUM_LAYERS = 1
     INIT_EPOCH = 5
-    MAX_EPOCH = 100
-    VECTOR_SIZE = 7
+    MAX_EPOCH = 50
+    VECTOR_SIZE = 6
 
     stock_1 = stock_data.stock(tickers, start_date, end_date)
     data_1 = model_data.model_data(stock_1, INPUT_SIZE, NUM_STEPS)
@@ -44,14 +44,16 @@ if __name__ == "__main__":
         learning_rate = tf.placeholder(tf.float32, None)
         
         def _create_one_cell():
-            return tf.contrib.rnn.LSTMCell(LSTM_SIZE)
+            lstm_cell = tf.contrib.rnn.LSTMCell(LSTM_SIZE)
             if KEEP_PROB < 1.0:
                 return tf.contrib.rnn.DropoutWrapper(lstm_cell, output_keep_prob=KEEP_PROB)
+            else:
+                return lstm_cell
         
         cell = tf.contrib.rnn.MultiRNNCell([_create_one_cell() for _ in range(NUM_LAYERS)], state_is_tuple=True) if NUM_LAYERS > 1 else _create_one_cell()
         
-        input_weights = tf.Variable(tf.truncated_normal([VECTOR_SIZE]))
-        input_bias = tf.Variable(tf.constant(0.01, shape=[VECTOR_SIZE]))
+        # input_weights = tf.Variable(tf.truncated_normal([VECTOR_SIZE]))
+        # input_bias = tf.Variable(tf.constant(0.01, shape=[VECTOR_SIZE]))
         
         #input_layer = tf.matmul(inputs, input_weights) + input_bias
         
@@ -93,7 +95,37 @@ if __name__ == "__main__":
                 }
                 train_loss, _ = sess.run([loss, minimize], train_data_feed)
                 saver = tf.train.Saver()
-                saver.save(sess, "model.ckpt")
+                saver.save(sess, "./model.ckpt")
+
+    data_frame = [[],[],[]]
+
+    with tf.Session(graph=lstm_graph) as sess:
+        saver = tf.train.Saver()
+        saver.restore(sess, "./model.ckpt")
+        merged_summary = tf.summary.merge_all()
+        writer = tf.summary.FileWriter("./model_log", sess.graph)
+        writer.add_graph(sess.graph) 
+        i = 0
+        for batch_X, batch_Y in zip(list(chunks(data_1.test_inputs_, 1)), list(chunks(data_1.test_targets_, 1))):
+            test_data_feed = {inputs: batch_X, targets: batch_Y, learning_rate: current_lr}
+            summary1, summary2, summary3 = sess.run([prediction, targets, pred], test_data_feed)
+            i +=1
+            data_frame[0].append(i)
+            data_frame[1].append(np.ravel(summary3))
+            data_frame[2].append(np.ravel(summary2))
+        
+    fig, ax = plt.subplots(figsize=(16,9))
+
+    data_frame[2] = np.multiply(data_frame[2],1)
+    data_frame[1] = np.multiply(data_frame[1],1)
+
+    ax.plot(data_1.test_dates_, data_frame[2], label="target")
+    ax.plot(data_1.test_dates_, data_frame[1], label="prediction")
+    ax.set_xlabel('Date')
+    ax.set_ylabel('Price')
+    ax.legend()
+
+    plt.show()
 
     print("End")
 
