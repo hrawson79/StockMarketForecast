@@ -9,9 +9,11 @@ import tensorflow as tf
 
 if __name__ == "__main__":
 
-    tickers = ['MSFT']
+    # Stock symbols to be downloaded
+    tickers = ['^GSPC']
 
-    start_date = '2008-03-19'
+    # Date range of data to be downloaded
+    start_date = '2017-02-02'
     end_date = '2019-03-15'
 
     INPUT_SIZE = 1
