@@ -161,3 +161,31 @@ with tf.Session(graph=lstm_graph) as sess:
       train_loss, _ = sess.run([loss, minimize], train_data_feed)
       saver = tf.train.Saver()
       saver.save(sess, "./model.ckpt")
+
+data_frame = [[],[],[]]
+
+with tf.Session(graph=lstm_graph) as sess:
+    saver = tf.train.Saver()
+    saver.restore(sess, "/tmp/model.ckpt")
+    merged_summary = tf.summary.merge_all()
+    writer = tf.summary.FileWriter("~/Downloads/model_log", sess.graph)
+    writer.add_graph(sess.graph) 
+    i = 0
+    for batch_X, batch_Y in zip(list(chunks(X_TEST, 1)), list(chunks(Y_TEST, 1))):
+      test_data_feed = {inputs: batch_X, targets: batch_Y, learning_rate: current_lr}
+      summary1, summary2, summary3 = sess.run([prediction, targets, pred], test_data_feed)
+      i +=1
+      data_frame[0].append(i)
+      data_frame[1].append(np.ravel(summary3))
+      data_frame[2].append(np.ravel(summary2))
+      
+fig, ax = plt.subplots(figsize=(16,9))
+
+data_frame[2] = np.multiply(data_frame[2],1)
+data_frame[1] = np.multiply(data_frame[1],1)
+
+ax.plot(DATES_TEST, data_frame[2], label="target")
+ax.plot(DATES_TEST, data_frame[1], label="prediction")
+ax.set_xlabel('Date')
+ax.set_ylabel('Price')
+ax.legend()
