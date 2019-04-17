@@ -1,0 +1,8 @@
+README.md
+setup.py
+StockMarketForecast.egg-info/PKG-INFO
+StockMarketForecast.egg-info/SOURCES.txt
+StockMarketForecast.egg-info/dependency_links.txt
+StockMarketForecast.egg-info/entry_points.txt
+StockMarketForecast.egg-info/requires.txt
+StockMarketForecast.egg-info/top_level.txt

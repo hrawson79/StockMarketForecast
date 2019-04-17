@@ -1,0 +1,5 @@
+pandas
+pandas_datareader
+matplotlib
+numpy
+tensorflow
