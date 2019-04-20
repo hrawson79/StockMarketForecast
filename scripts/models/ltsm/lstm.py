@@ -7,15 +7,15 @@ import tensorflow as tf
 INPUT_SIZE = 1
 TARGET_SIZE = 1
 NUM_STEPS = 30
-INIT_LEARNING_RATE = 0.001
-LEARNING_RATE_DECAY = 0.99
-BATCH_SIZE =256
+INIT_LEARNING_RATE = 0.0001
+LEARNING_RATE_DECAY = 0.98
+BATCH_SIZE =512
 KEEP_PROB = 0.8
-LSTM_SIZE = 512
-NUM_LAYERS = 1
+LSTM_SIZE = 1024
+NUM_LAYERS = 2
 INIT_EPOCH = 5
-MAX_EPOCH = 20
-VECTOR_SIZE = 1
+MAX_EPOCH = 50
+VECTOR_SIZE = 6
 
 def chunks(l, n):
     # For item i in a range that is a length of l,
@@ -27,6 +27,8 @@ class LSTM:
     def __init__(self):
         tf.reset_default_graph()
         self.graph = tf.Graph()
+        self.last_history = []
+        self.target_history = []
     def define(self):
         with self.graph.as_default():
             print(NUM_LAYERS)
@@ -56,6 +58,9 @@ class LSTM:
             val = tf.transpose(val, [1,0,2])
             
             last = tf.gather(val, int(val.get_shape()[0]) - 1, name="last_lstm_output")
+            
+            self.last_history.append(last)
+            
             
             weight = tf.Variable(tf.truncated_normal([LSTM_SIZE, 1]))
             bias = tf.Variable(tf.constant(0.01, shape=[1]))
@@ -101,21 +106,20 @@ class LSTM:
             
             train_pred_all=np.concatenate(train_pred_all)
             train_target_all=np.concatenate(train_target_all)
-            print(((train_pred_all-train_target_all)**2).mean())
+            print("Train final MSE:", ((train_pred_all-train_target_all)**2).mean())
             
             #fig, ax1 = plt.subplots(figsize=(16,9))
             #ax1.plot(train_target_all, label="target")
             #ax1.plot(train_pred_all, label="prediction")
-            #ax1.set_xlabel('Date')
-            #ax1.set_ylabel('Price')
-            #ax1.set_title('Test Data')
-            ##ax1.set_ylim(-1,2)
+            #ax1.set_title('Training')
             #ax1.legend()
             #plt.show()
 
             
     def test(self, test_inputs, test_targets, train_inputs, train_targets):
-        data_frame = [[],[],[]]
+        #data_frame = [[],[],[]]
+        t_all=[]
+        p_all=[]
 
         with tf.Session(graph=self.graph) as sess:
             saver = tf.train.Saver()
@@ -127,30 +131,40 @@ class LSTM:
             for batch_X, batch_Y in zip(list(chunks(test_inputs, 1)), list(chunks(test_targets, 1))):
                 test_data_feed = {self.inputs: batch_X, self.targets: batch_Y, self.learning_rate: self.current_lr}
                 #summary1, summary2, summary3 = sess.run([self.prediction, self.targets, self.pred], test_data_feed)
-                summary2, summary3 = sess.run([self.targets, self.pred], test_data_feed)
+                t, p = sess.run([self.targets, self.pred], test_data_feed)
                 i +=1
-                data_frame[0].append(i)
-                data_frame[1].append(np.ravel(summary3))
-                data_frame[2].append(np.ravel(summary2))
+                #data_frame[0].append(i)
+                #data_frame[1].append(np.ravel(summary3))
+                #data_frame[2].append(np.ravel(summary2))
+                t_all.append(np.ravel(t))
+                p_all.append(np.ravel(p))
+        #print('test_targets:',t_all)
             
+        t_all=np.concatenate(t_all)
+        p_all=np.concatenate(p_all)
         fig, (ax1, ax2) = plt.subplots(1, 2) #, figsize=(16,9))
 
         #data_frame[2] = np.multiply(data_frame[2],1)
         #data_frame[1] = np.multiply(data_frame[1],1)
 
-        ax1.plot(data_frame[2], label="target")
-        ax1.plot(data_frame[1], label="prediction")
+        #ax1.plot(data_frame[2], label="target")
+        #ax1.plot(data_frame[1], label="prediction")
+        ax1.plot(t_all, label="target")
+        ax1.plot(p_all, label="prediction")
         ax1.set_xlabel('Date')
         ax1.set_ylabel('Price')
         ax1.set_title('Test Data')
         ax1.legend()
         
-        mse_test=((np.array(data_frame[2])-np.array(data_frame[1]))**2).mean()
+        #mse_test=((np.array(data_frame[2])-np.array(data_frame[1]))**2).mean()
+        mse_test=((t_all - p_all)**2).mean()
         print("Test MSE:", mse_test)
              
 
         # also plot training data
-        data_frame = [[],[],[]]
+        #data_frame = [[],[],[]]
+        t_all_train=[]
+        p_all_train=[]
 
         with tf.Session(graph=self.graph) as sess:
             saver = tf.train.Saver()
@@ -164,23 +178,29 @@ class LSTM:
                 #summary1, summary2, summary3 = sess.run([self.prediction, self.targets, self.pred], test_data_feed)
                 summary2, summary3 = sess.run([self.targets, self.pred], test_data_feed)
                 i +=1
-                data_frame[0].append(i)
-                data_frame[1].append(np.ravel(summary3))
-                data_frame[2].append(np.ravel(summary2))
+                #data_frame[0].append(i)
+                #data_frame[1].append(summary3)
+                #data_frame[2].append(summary2)
+                t_all_train.append(np.ravel(summary2))
+                p_all_train.append(np.ravel(summary3))
 
-        mse_train=((np.array(data_frame[2])-np.array(data_frame[1]))**2).mean()
+                
+        t_all_train=np.concatenate(t_all_train)
+        p_all_train=np.concatenate(p_all_train)
+        #mse_train=((np.array(data_frame[2])-np.array(data_frame[1]))**2).mean()
+        mse_train=((t_all_train - p_all_train)**2).mean()
         print("Train MSE:", mse_train)
         
         #data_frame[2] = np.multiply(data_frame[2],1)
         #data_frame[1] = np.multiply(data_frame[1],1)
 
-        ax2.plot(data_frame[2], label="target")
-        ax2.plot(data_frame[1], label="prediction")
+        #ax2.plot(data_frame[2], label="target")
+        #ax2.plot(data_frame[1], label="prediction")
+        ax2.plot(t_all_train, label="target")
+        ax2.plot(p_all_train, label="prediction")
         ax2.set_xlabel('Date')
         ax2.set_ylabel('Price')
         ax2.set_title('Training Data')
         ax2.legend()
                   
-                  
-
         plt.show()

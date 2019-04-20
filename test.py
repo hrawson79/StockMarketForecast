@@ -14,8 +14,8 @@ if __name__ == "__main__":
     tickers = ['^GSPC']
 
     # Date range of data to be downloaded
-    start_date = '2017-06-02'
-    end_date = '2019-03-15'
+    start_date = '2016-02-18'
+    end_date = '2019-03-28'
 
     INPUT_SIZE = 1
     TARGET_SIZE = 1
