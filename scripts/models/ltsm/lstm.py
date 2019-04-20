@@ -15,7 +15,7 @@ LSTM_SIZE = 512
 NUM_LAYERS = 1
 INIT_EPOCH = 5
 MAX_EPOCH = 20
-VECTOR_SIZE = 1
+VECTOR_SIZE = 6
 
 def chunks(l, n):
     # For item i in a range that is a length of l,

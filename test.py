@@ -12,22 +12,24 @@ if __name__ == "__main__":
 
     # Stock symbols to be downloaded
     tickers = ['^GSPC']
+    # tickers = ['^TSLA']
+    # tickers = ['^MSFT']
 
     # Date range of data to be downloaded
-    start_date = '2017-06-02'
-    end_date = '2019-03-15'
+    start_date = '2016-02-18'
+    end_date = '2019-03-28'
 
     INPUT_SIZE = 1
     TARGET_SIZE = 1
     NUM_STEPS = 30
     INIT_LEARNING_RATE = 0.001
     LEARNING_RATE_DECAY = 0.99
-    BATCH_SIZE = 64
+    BATCH_SIZE =256
     KEEP_PROB = 0.8
-    LSTM_SIZE = 128
+    LSTM_SIZE = 512
     NUM_LAYERS = 1
     INIT_EPOCH = 5
-    MAX_EPOCH = 30
+    MAX_EPOCH = 20
     VECTOR_SIZE = 6
 
     stock_1 = stock_data.stock(tickers, start_date, end_date)
