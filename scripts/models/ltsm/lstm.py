@@ -14,7 +14,7 @@ KEEP_PROB = 0.8
 LSTM_SIZE = 512
 NUM_LAYERS = 3
 INIT_EPOCH = 5
-MAX_EPOCH = 20
+MAX_EPOCH = 50
 VECTOR_SIZE = 6
 
 def chunks(l, n):
@@ -114,7 +114,7 @@ class LSTM:
             #plt.show()
 
             
-    def test(self, test_inputs, test_targets, train_inputs, train_targets):
+    def test(self, test_inputs, test_targets, train_inputs, train_targets, fig_name = "test.png"):
         data_frame = [[],[],[]]
 
         with tf.Session(graph=self.graph) as sess:
@@ -181,7 +181,7 @@ class LSTM:
         ax2.set_title('Training Data')
         ax2.legend()
                   
-                  
+        plt.savefig(fig_name)
 
         plt.show()
         
