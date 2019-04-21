@@ -12,7 +12,7 @@ LEARNING_RATE_DECAY = 0.99
 BATCH_SIZE =256
 KEEP_PROB = 0.8
 LSTM_SIZE = 512
-NUM_LAYERS = 1
+NUM_LAYERS = 3
 INIT_EPOCH = 5
 MAX_EPOCH = 20
 VECTOR_SIZE = 6
@@ -97,7 +97,7 @@ class LSTM:
                         train_target_all.append(np.ravel(train_target))
                         train_pred_all.append(np.ravel(train_pred))
                     saver = tf.train.Saver()
-                    saver.save(sess, "./model.ckpt")
+                    saver.save(sess, "work/model.ckpt")
             
             train_pred_all=np.concatenate(train_pred_all)
             train_target_all=np.concatenate(train_target_all)
@@ -119,9 +119,9 @@ class LSTM:
 
         with tf.Session(graph=self.graph) as sess:
             saver = tf.train.Saver()
-            saver.restore(sess, "./model.ckpt")
+            saver.restore(sess, "work/model.ckpt")
             merged_summary = tf.summary.merge_all()
-            writer = tf.summary.FileWriter("./model_log", sess.graph)
+            writer = tf.summary.FileWriter("work/model_log", sess.graph)
             writer.add_graph(sess.graph) 
             i = 0
             for batch_X, batch_Y in zip(list(chunks(test_inputs, 1)), list(chunks(test_targets, 1))):
@@ -154,7 +154,7 @@ class LSTM:
 
         with tf.Session(graph=self.graph) as sess:
             saver = tf.train.Saver()
-            saver.restore(sess, "./model.ckpt")
+            saver.restore(sess, "work/model.ckpt")
             #merged_summary = tf.summary.merge_all()
             #writer = tf.summary.FileWriter("./model_log", sess.graph)
             #writer.add_graph(sess.graph) 
@@ -184,3 +184,6 @@ class LSTM:
                   
 
         plt.show()
+        
+
+        return(mse_train, mse_test)

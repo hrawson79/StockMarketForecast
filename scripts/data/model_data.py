@@ -23,6 +23,8 @@ class model_data(object):
         
         self.input_seq_=np.array(self.input_seq_).reshape(len(self.input_seq_), len(stock_obj.data_frame_.columns))
         self.target_seq_=np.array(self.target_seq_).reshape(len(self.target_seq_), 1)
+        self.target_seq_avg = np.mean(self.target_seq_)
+        self.target_seq_std = np.std(self.target_seq_)
         
         scaler=StandardScaler()
         self.input_seq_ = scaler.fit_transform(self.input_seq_)
