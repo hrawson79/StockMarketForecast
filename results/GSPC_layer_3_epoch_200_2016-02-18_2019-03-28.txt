@@ -1,0 +1,3 @@
+Target STD: 269.290161
+Train MSE: 0.012976 
+Test MSE: 0.042235

@@ -14,7 +14,7 @@ KEEP_PROB = 0.8
 LSTM_SIZE = 512
 NUM_LAYERS = 3
 INIT_EPOCH = 5
-MAX_EPOCH = 50
+MAX_EPOCH = 200
 VECTOR_SIZE = 6
 
 def chunks(l, n):
@@ -69,7 +69,7 @@ class LSTM:
             optimizer = tf.train.RMSPropOptimizer(self.learning_rate)
             self.minimize = optimizer.minimize(self.loss)
     
-    def train(self, train_inputs, train_targets):
+    def train(self, model_name, train_inputs, train_targets):
             
         learning_rates_to_use = [INIT_LEARNING_RATE * (LEARNING_RATE_DECAY ** max(float(i + 1 - INIT_EPOCH), 0.0)) for i in range(MAX_EPOCH)]
 
@@ -91,17 +91,17 @@ class LSTM:
                         self.targets: batch_Y,
                         self.learning_rate: self.current_lr
                     }
-                    train_target, train_pred, train_loss, _ = sess.run([self.targets, self.pred, self.loss, self.minimize], train_data_feed)
-                    print(train_loss)
-                    if(epoch_step==MAX_EPOCH-1):
-                        train_target_all.append(np.ravel(train_target))
-                        train_pred_all.append(np.ravel(train_pred))
-                    saver = tf.train.Saver()
-                    saver.save(sess, "work/model.ckpt")
+                    # train_target, train_pred, train_loss, _ = sess.run([self.targets, self.pred, self.loss, self.minimize], train_data_feed)
+                    # print(train_loss)
+                    # if(epoch_step==MAX_EPOCH-1):
+                    #     train_target_all.append(np.ravel(train_target))
+                    #     train_pred_all.append(np.ravel(train_pred))
+                    # saver = tf.train.Saver()
+                    # saver.save(sess, "work/%s_model.ckpt" % (model_name))
             
-            train_pred_all=np.concatenate(train_pred_all)
-            train_target_all=np.concatenate(train_target_all)
-            print(((train_pred_all-train_target_all)**2).mean())
+            # train_pred_all=np.concatenate(train_pred_all)
+            # train_target_all=np.concatenate(train_target_all)
+            # print(((train_pred_all-train_target_all)**2).mean())
             
             #fig, ax1 = plt.subplots(figsize=(16,9))
             #ax1.plot(train_target_all, label="target")
@@ -114,14 +114,14 @@ class LSTM:
             #plt.show()
 
             
-    def test(self, test_inputs, test_targets, train_inputs, train_targets, fig_name = "test.png"):
+    def test(self, model_name, test_inputs, test_targets, train_inputs, train_targets):
         data_frame = [[],[],[]]
 
         with tf.Session(graph=self.graph) as sess:
             saver = tf.train.Saver()
-            saver.restore(sess, "work/model.ckpt")
+            saver.restore(sess, "work/%s_model.ckpt" % (model_name))
             merged_summary = tf.summary.merge_all()
-            writer = tf.summary.FileWriter("work/model_log", sess.graph)
+            writer = tf.summary.FileWriter("work/%s_model_log" % (model_name), sess.graph)
             writer.add_graph(sess.graph) 
             i = 0
             for batch_X, batch_Y in zip(list(chunks(test_inputs, 1)), list(chunks(test_targets, 1))):
@@ -138,12 +138,12 @@ class LSTM:
         #data_frame[2] = np.multiply(data_frame[2],1)
         #data_frame[1] = np.multiply(data_frame[1],1)
 
-        ax1.plot(data_frame[2], label="target")
-        ax1.plot(data_frame[1], label="prediction")
-        ax1.set_xlabel('Date')
-        ax1.set_ylabel('Price')
-        ax1.set_title('Test Data')
-        ax1.legend()
+        # ax1.plot(data_frame[2], label="target")
+        # ax1.plot(data_frame[1], label="prediction")
+        # ax1.set_xlabel('Date')
+        # ax1.set_ylabel('Price')
+        # ax1.set_title('Test Data')
+        # ax1.legend()
         
         mse_test=((np.array(data_frame[2])-np.array(data_frame[1]))**2).mean()
         print("Test MSE:", mse_test)
@@ -154,7 +154,7 @@ class LSTM:
 
         with tf.Session(graph=self.graph) as sess:
             saver = tf.train.Saver()
-            saver.restore(sess, "work/model.ckpt")
+            saver.restore(sess, "work/%s_model.ckpt"  % (model_name))
             #merged_summary = tf.summary.merge_all()
             #writer = tf.summary.FileWriter("./model_log", sess.graph)
             #writer.add_graph(sess.graph) 
@@ -181,7 +181,7 @@ class LSTM:
         ax2.set_title('Training Data')
         ax2.legend()
                   
-        plt.savefig(fig_name)
+        plt.savefig("figures/%s.png" % (model_name))
 
         plt.show()
         

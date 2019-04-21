@@ -1,2 +1,2 @@
-model_checkpoint_path: "model.ckpt"
-all_model_checkpoint_paths: "model.ckpt"
+model_checkpoint_path: "TSLA_layer_3_epoch_200_2016-02-18_2019-03-28_model.ckpt"
+all_model_checkpoint_paths: "TSLA_layer_3_epoch_200_2016-02-18_2019-03-28_model.ckpt"

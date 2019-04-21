@@ -15,8 +15,8 @@ if __name__ == "__main__":
 
     # Stock symbols to be downloaded
     # tickers = ['^GSPC']
-    # tickers = ['TSLA']
-    tickers = ['MSFT']
+    tickers = ['TSLA']
+    # tickers = ['MSFT']
     ticker_name = tickers[0].replace('^', '')
 
     # Date range of data to be downloaded
@@ -30,7 +30,9 @@ if __name__ == "__main__":
     stock_1 = stock_data.stock(tickers, start_date, end_date)
     data_1 = model_data.model_data(stock_1, lstm.INPUT_SIZE, lstm.NUM_STEPS)
 
-    fp = open("results/%s_layer_%d_epoch_%d_%s_%s.txt" % (ticker_name, lstm.NUM_LAYERS, lstm.MAX_EPOCH, start_date, end_date), "w")
+    model_name = "%s_layer_%d_epoch_%d_%s_%s" % (ticker_name, lstm.NUM_LAYERS, lstm.MAX_EPOCH, start_date, end_date)
+
+    fp = open("results/%s.txt" % (model_name), "w")
 
     print("Target STD: %f" % data_1.target_seq_std)
     print("Target STD: %f" % data_1.target_seq_std, file=fp)
@@ -45,11 +47,11 @@ if __name__ == "__main__":
 
     
     # Train graph
-    lstm_1.train(data_1.train_inputs_, data_1.train_targets_)
+    lstm_1.train(model_name, data_1.train_inputs_, data_1.train_targets_)
 
     # Test graph
-    fig_name = "figures/%s_layer_%d_epoch_%d_%s_%s.png" % (ticker_name, lstm.NUM_LAYERS, lstm.MAX_EPOCH, start_date, end_date)
-    mse_train, mse_test = lstm_1.test(data_1.test_inputs_, data_1.test_targets_, data_1.train_inputs_, data_1.train_targets_, fig_name)
+    
+    mse_train, mse_test = lstm_1.test(model_name, data_1.test_inputs_, data_1.test_targets_, data_1.train_inputs_, data_1.train_targets_)
 
     print("Train MSE: %f " % mse_train, file=fp)
     print("Test MSE: %f" % mse_test, file = fp)
