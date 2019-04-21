@@ -8,14 +8,14 @@ INPUT_SIZE = 1
 TARGET_SIZE = 1
 NUM_STEPS = 30
 INIT_LEARNING_RATE = 0.0001
-LEARNING_RATE_DECAY = 0.98
+LEARNING_RATE_DECAY = 0.99
 BATCH_SIZE =512
 KEEP_PROB = 0.8
-LSTM_SIZE = 1024
+LSTM_SIZE = 512
 NUM_LAYERS = 2
 INIT_EPOCH = 5
-MAX_EPOCH = 50
-VECTOR_SIZE = 6
+MAX_EPOCH = 200
+VECTOR_SIZE = 1
 
 def chunks(l, n):
     # For item i in a range that is a length of l,
@@ -204,3 +204,4 @@ class LSTM:
         ax2.legend()
                   
         plt.show()
+        plt.savefig('figure.png')

@@ -11,17 +11,18 @@ import matplotlib.pyplot as plt
 
 class model_data(object):
       def __init__(self, stock_obj, input_size, num_steps):
-        self.input_seq_ = [np.array(stock_obj.data_frame_[i * input_size: (i + 1) * input_size])
-           for i in range(len(stock_obj.data_frame_) // input_size)]
+        #self.input_seq_ = [np.array(stock_obj.data_frame_[i * input_size: (i + 1) * input_size])
+        #   for i in range(len(stock_obj.data_frame_) // input_size)]
         # use only the closing value
-        #self.input_seq_ = [np.array(stock_obj.close_[i * input_size: (i + 1) * input_size])
-        #   for i in range(len(stock_obj.close_) // input_size)]
+        self.input_seq_ = [np.array(stock_obj.close_[i * input_size: (i + 1) * input_size])
+           for i in range(len(stock_obj.close_) // input_size)]
         self.target_seq_ = [np.array(stock_obj.close_[i * input_size: (i + 1) * input_size])
            for i in range(len(stock_obj.close_) // input_size)]
         self.date_seq_ = [np.array(stock_obj.dates_[i * input_size: (i + 1) * input_size])
            for i in range(len(stock_obj.dates_) // input_size)]
         
-        self.input_seq_=np.array(self.input_seq_).reshape(len(self.input_seq_), len(stock_obj.data_frame_.columns))
+        #self.input_seq_=np.array(self.input_seq_).reshape(len(self.input_seq_), len(stock_obj.data_frame_.columns))
+        self.input_seq_=np.array(self.input_seq_).reshape(len(self.input_seq_), 1)
         self.target_seq_=np.array(self.target_seq_).reshape(len(self.target_seq_), 1)
         
         scaler=StandardScaler()
