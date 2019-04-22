@@ -15,8 +15,8 @@ if __name__ == "__main__":
 
     # Stock symbols to be downloaded
     # tickers = ['^GSPC']
-    tickers = ['TSLA']
-    # tickers = ['MSFT']
+    # tickers = ['TSLA']
+    tickers = ['MSFT']
     ticker_name = tickers[0].replace('^', '')
 
     # Date range of data to be downloaded
@@ -51,7 +51,7 @@ if __name__ == "__main__":
 
     # Test graph
     
-    mse_train, mse_test = lstm_1.test(model_name, data_1.test_inputs_, data_1.test_targets_, data_1.train_inputs_, data_1.train_targets_)
+    mse_train, mse_test = lstm_1.test(model_name, data_1.test_dates_, data_1.test_inputs_, data_1.test_targets_, data_1.train_inputs_, data_1.train_targets_)
 
     print("Train MSE: %f " % mse_train, file=fp)
     print("Test MSE: %f" % mse_test, file = fp)

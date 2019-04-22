@@ -14,7 +14,7 @@ KEEP_PROB = 0.8
 LSTM_SIZE = 512
 NUM_LAYERS = 3
 INIT_EPOCH = 5
-MAX_EPOCH = 200
+MAX_EPOCH = 20
 VECTOR_SIZE = 6
 
 def chunks(l, n):
@@ -76,7 +76,9 @@ class LSTM:
         # Train graph
         with tf.Session(graph=self.graph) as sess:
             #tf.global_variables_initializer().run()
-            sess.run(tf.initialize_all_variables())
+            # sess.run(tf.initialize_all_variables())
+            saver = tf.train.Saver()
+            saver.restore(sess, "work/%s_model.ckpt" % (model_name))
             
             train_pred_all=[]
             train_target_all=[]
@@ -91,17 +93,17 @@ class LSTM:
                         self.targets: batch_Y,
                         self.learning_rate: self.current_lr
                     }
-                    # train_target, train_pred, train_loss, _ = sess.run([self.targets, self.pred, self.loss, self.minimize], train_data_feed)
-                    # print(train_loss)
-                    # if(epoch_step==MAX_EPOCH-1):
-                    #     train_target_all.append(np.ravel(train_target))
-                    #     train_pred_all.append(np.ravel(train_pred))
-                    # saver = tf.train.Saver()
-                    # saver.save(sess, "work/%s_model.ckpt" % (model_name))
+                    train_target, train_pred, train_loss, _ = sess.run([self.targets, self.pred, self.loss, self.minimize], train_data_feed)
+                    print(train_loss)
+                    if(epoch_step==MAX_EPOCH-1):
+                        train_target_all.append(np.ravel(train_target))
+                        train_pred_all.append(np.ravel(train_pred))
+                    saver = tf.train.Saver()
+                    saver.save(sess, "work/%s_model.ckpt" % (model_name))
             
-            # train_pred_all=np.concatenate(train_pred_all)
-            # train_target_all=np.concatenate(train_target_all)
-            # print(((train_pred_all-train_target_all)**2).mean())
+            train_pred_all=np.concatenate(train_pred_all)
+            train_target_all=np.concatenate(train_target_all)
+            print(((train_pred_all-train_target_all)**2).mean())
             
             #fig, ax1 = plt.subplots(figsize=(16,9))
             #ax1.plot(train_target_all, label="target")
@@ -114,7 +116,7 @@ class LSTM:
             #plt.show()
 
             
-    def test(self, model_name, test_inputs, test_targets, train_inputs, train_targets):
+    def test(self, model_name, test_dates, test_inputs, test_targets, train_inputs, train_targets):
         data_frame = [[],[],[]]
 
         with tf.Session(graph=self.graph) as sess:
@@ -133,17 +135,18 @@ class LSTM:
                 data_frame[1].append(np.ravel(summary3))
                 data_frame[2].append(np.ravel(summary2))
             
-        fig, (ax1, ax2) = plt.subplots(1, 2) #, figsize=(16,9))
+        # fig, (ax1, ax2) = plt.subplots(1, 2) #, figsize=(16,9))
+        fig, ax1 = plt.subplots(1, 1) #, figsize=(16,9))
 
         #data_frame[2] = np.multiply(data_frame[2],1)
         #data_frame[1] = np.multiply(data_frame[1],1)
 
-        # ax1.plot(data_frame[2], label="target")
-        # ax1.plot(data_frame[1], label="prediction")
-        # ax1.set_xlabel('Date')
-        # ax1.set_ylabel('Price')
-        # ax1.set_title('Test Data')
-        # ax1.legend()
+        ax1.plot(test_dates, data_frame[2], label="target")
+        ax1.plot(test_dates, data_frame[1], label="prediction")
+        ax1.set_xlabel('Date')
+        ax1.set_ylabel('Price')
+        ax1.set_title('Test Data')
+        ax1.legend()
         
         mse_test=((np.array(data_frame[2])-np.array(data_frame[1]))**2).mean()
         print("Test MSE:", mse_test)
@@ -174,12 +177,12 @@ class LSTM:
         #data_frame[2] = np.multiply(data_frame[2],1)
         #data_frame[1] = np.multiply(data_frame[1],1)
 
-        ax2.plot(data_frame[2], label="target")
-        ax2.plot(data_frame[1], label="prediction")
-        ax2.set_xlabel('Date')
-        ax2.set_ylabel('Price')
-        ax2.set_title('Training Data')
-        ax2.legend()
+        # ax2.plot(data_frame[2], label="target")
+        # ax2.plot(data_frame[1], label="prediction")
+        # ax2.set_xlabel('Date')
+        # ax2.set_ylabel('Price')
+        # ax2.set_title('Training Data')
+        # ax2.legend()
                   
         plt.savefig("figures/%s.png" % (model_name))
 
