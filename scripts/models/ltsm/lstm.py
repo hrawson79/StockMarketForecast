@@ -14,7 +14,7 @@ KEEP_PROB = 0.8
 LSTM_SIZE = 512
 NUM_LAYERS = 3
 INIT_EPOCH = 5
-MAX_EPOCH = 20
+MAX_EPOCH = 200
 VECTOR_SIZE = 6
 
 def chunks(l, n):
@@ -76,9 +76,9 @@ class LSTM:
         # Train graph
         with tf.Session(graph=self.graph) as sess:
             #tf.global_variables_initializer().run()
-            # sess.run(tf.initialize_all_variables())
-            saver = tf.train.Saver()
-            saver.restore(sess, "work/%s_model.ckpt" % (model_name))
+            sess.run(tf.initialize_all_variables())
+            # saver = tf.train.Saver()
+            # saver.restore(sess, "work/%s_model.ckpt" % (model_name))
             
             train_pred_all=[]
             train_target_all=[]
@@ -93,17 +93,17 @@ class LSTM:
                         self.targets: batch_Y,
                         self.learning_rate: self.current_lr
                     }
-                    train_target, train_pred, train_loss, _ = sess.run([self.targets, self.pred, self.loss, self.minimize], train_data_feed)
-                    print(train_loss)
-                    if(epoch_step==MAX_EPOCH-1):
-                        train_target_all.append(np.ravel(train_target))
-                        train_pred_all.append(np.ravel(train_pred))
-                    saver = tf.train.Saver()
-                    saver.save(sess, "work/%s_model.ckpt" % (model_name))
+            #         train_target, train_pred, train_loss, _ = sess.run([self.targets, self.pred, self.loss, self.minimize], train_data_feed)
+            #         print(train_loss)
+            #         if(epoch_step==MAX_EPOCH-1):
+            #             train_target_all.append(np.ravel(train_target))
+            #             train_pred_all.append(np.ravel(train_pred))
+            #         saver = tf.train.Saver()
+            #         saver.save(sess, "work/%s_model.ckpt" % (model_name))
             
-            train_pred_all=np.concatenate(train_pred_all)
-            train_target_all=np.concatenate(train_target_all)
-            print(((train_pred_all-train_target_all)**2).mean())
+            # train_pred_all=np.concatenate(train_pred_all)
+            # train_target_all=np.concatenate(train_target_all)
+            # print(((train_pred_all-train_target_all)**2).mean())
             
             #fig, ax1 = plt.subplots(figsize=(16,9))
             #ax1.plot(train_target_all, label="target")
