@@ -136,17 +136,21 @@ class LSTM:
                 data_frame[2].append(np.ravel(summary2))
             
         # fig, (ax1, ax2) = plt.subplots(1, 2) #, figsize=(16,9))
-        fig, ax1 = plt.subplots(1, 1) #, figsize=(16,9))
+        fig, ax1 = plt.subplots(figsize=(16,9))
+        plt.rcParams.update({'font.size': 16})
 
         #data_frame[2] = np.multiply(data_frame[2],1)
         #data_frame[1] = np.multiply(data_frame[1],1)
 
         ax1.plot(test_dates, data_frame[2], label="target")
         ax1.plot(test_dates, data_frame[1], label="prediction")
-        ax1.set_xlabel('Date')
-        ax1.set_ylabel('Price')
+        ax1.set_xlabel('Date', fontsize = 16)
+        ax1.set_ylabel('Price', fontsize = 16)
         ax1.set_title('Test Data')
-        ax1.legend()
+        ax1.legend(prop = {'size': 16})
+
+        ax1_ax = plt.gca()
+        ax1_ax.tick_params(labelsize=16)
         
         mse_test=((np.array(data_frame[2])-np.array(data_frame[1]))**2).mean()
         print("Test MSE:", mse_test)
