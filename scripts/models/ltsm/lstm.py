@@ -69,7 +69,11 @@ class LSTM:
             optimizer = tf.train.RMSPropOptimizer(self.learning_rate)
             self.minimize = optimizer.minimize(self.loss)
     
-    def train(self, model_name, train_inputs, train_targets):
+    def train(self, data):
+
+        model_name = data.model_name_
+        train_inputs = data.train_inputs_
+        train_targets = data.train_targets_
             
         learning_rates_to_use = [INIT_LEARNING_RATE * (LEARNING_RATE_DECAY ** max(float(i + 1 - INIT_EPOCH), 0.0)) for i in range(MAX_EPOCH)]
 
@@ -93,30 +97,40 @@ class LSTM:
                         self.targets: batch_Y,
                         self.learning_rate: self.current_lr
                     }
-            #         train_target, train_pred, train_loss, _ = sess.run([self.targets, self.pred, self.loss, self.minimize], train_data_feed)
-            #         print(train_loss)
-            #         if(epoch_step==MAX_EPOCH-1):
-            #             train_target_all.append(np.ravel(train_target))
-            #             train_pred_all.append(np.ravel(train_pred))
-            #         saver = tf.train.Saver()
-            #         saver.save(sess, "work/%s_model.ckpt" % (model_name))
+                    train_target, train_pred, train_loss, _ = sess.run([self.targets, self.pred, self.loss, self.minimize], train_data_feed)
+                    print(train_loss)
+                    if(epoch_step==MAX_EPOCH-1):
+                        train_target_all.append(np.ravel(train_target))
+                        train_pred_all.append(np.ravel(train_pred))
+                    saver = tf.train.Saver()
+                    saver.save(sess, "work/%s_model.ckpt" % (model_name))
             
-            # train_pred_all=np.concatenate(train_pred_all)
-            # train_target_all=np.concatenate(train_target_all)
-            # print(((train_pred_all-train_target_all)**2).mean())
+            train_pred_all=np.concatenate(train_pred_all)
+            train_target_all=np.concatenate(train_target_all)
+            print(((train_pred_all-train_target_all)**2).mean())
             
-            #fig, ax1 = plt.subplots(figsize=(16,9))
-            #ax1.plot(train_target_all, label="target")
-            #ax1.plot(train_pred_all, label="prediction")
-            #ax1.set_xlabel('Date')
-            #ax1.set_ylabel('Price')
-            #ax1.set_title('Test Data')
-            ##ax1.set_ylim(-1,2)
-            #ax1.legend()
-            #plt.show()
+            fig, ax1 = plt.subplots(figsize=(16,9))
+            ax1.plot(train_target_all, label="target")
+            ax1.plot(train_pred_all, label="prediction")
+            ax1.set_xlabel('Date')
+            ax1.set_ylabel('Price')
+            ax1.set_title('Test Data')
+            #ax1.set_ylim(-1,2)
+            ax1.legend()
+            plt.show()
 
             
-    def test(self, model_name, test_dates, test_inputs, test_targets, train_inputs, train_targets):
+    def test(self, data):
+        model_name = data.model_name_
+        test_dates = data.test_dates_
+        test_inputs = data.test_inputs_
+        test_targets = data.test_targets_
+        train_inputs = data.train_inputs_
+        train_targets = data.train_targets_
+        mean = data.target_seq_avg
+        std = data.target_seq_std
+
+
         data_frame = [[],[],[]]
 
         with tf.Session(graph=self.graph) as sess:
@@ -154,6 +168,16 @@ class LSTM:
         
         mse_test=((np.array(data_frame[2])-np.array(data_frame[1]))**2).mean()
         print("Test MSE:", mse_test)
+
+        rate = 0
+        for i in range(0, len(data_frame) - 1):
+            if (data_frame[1][i + 1] > data_frame[1][i]):
+                rate += (data_frame[2][i + 1] - data_frame[2][i]) / (data_frame[2][i] + mean / std)
+        avg_rate = rate / len(data_frame)
+        print("Target Mean: %f" %(mean))
+        print("Target STD: %f" %(std))
+        print("Avg. Rate: %f" %(avg_rate))
+
              
 
         # also plot training data

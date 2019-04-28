@@ -10,7 +10,9 @@ from sklearn.preprocessing import StandardScaler
 import matplotlib.pyplot as plt
 
 class model_data(object):
-      def __init__(self, stock_obj, input_size, num_steps):
+      def __init__(self, model_name, stock_obj, input_size, num_steps):
+        self.model_name_ = model_name
+
         self.input_seq_ = [np.array(stock_obj.data_frame_[i * input_size: (i + 1) * input_size])
            for i in range(len(stock_obj.data_frame_) // input_size)]
         # use only the closing value
