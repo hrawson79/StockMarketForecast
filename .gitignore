@@ -1,0 +1,3 @@
+model.ckpt.*
+model_log/*
+*__pycache__*

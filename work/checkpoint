@@ -1,0 +1,2 @@
+model_checkpoint_path: "GSPC_layer_3_epoch_200_2016-02-18_2019-03-28_model.ckpt"
+all_model_checkpoint_paths: "GSPC_layer_3_epoch_200_2016-02-18_2019-03-28_model.ckpt"
